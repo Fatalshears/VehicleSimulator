@@ -7,11 +7,18 @@ import time
 # 2/ SetSpeed_x -> x in km/h
 # 3/ SetSteering_x -> x in rad, range -3.14 to 3.14
 # 4/ SetBrake_x -> x range 0..1
-# 5/ SetEgoPosition_x_y_rot -> x in cm, y in cm, z in degree
-# 6/ SpawnObject_x -> x in [JaguarDaimlerV8, RamTRX]
+# 5/ SetEgoPosition_x_y_rot -> x in m, y in m, z in degree
+# 6/ SpawnObject_x -> x in [JaguarDaimlerV8, RamTRX, MotorbikeFatBoy90, Bicycle, PedestrianMan]
 # 7/ SetObjectPosition_id_x_y_rot -> id is object spawn order, first spawn is 0, second spawn is 1, etc., 255 is invalid
 # 8/ EnableControlObject_id_x_y_z -> id is object spawn order, x is desired speed in km/h, y is desired steering in rad, z is brake in 0..1
 # 9/ DisableControlObject -> free all controlled objects
+# 10/ SetAcceleration_x -> x in m/s2
+
+# Data encoding rule
+# Byte no.1 - Data type (1 - float, 2 - integer, 3 - string)
+# Byte no.2 - Data length in number of bytes
+# Byte no.3 - Data tag (1 - ego speed, 2 - ego gear, 3 - engine RPM, 4 - master cylinder pressure)
+# Remaining bytes - Value
 
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 7000  # Port to listen on (non-privileged ports are > 1023)
@@ -59,7 +66,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             response = "SpawnObject_RamTRX".encode("utf-8") 
             client_socket.send(response)
             time.sleep(1)
-            response = "SetObjectPosition_0_3000_-600_-0.25".encode("utf-8") # set object 0 at 30m in x direction, -6m in y direction, rotation around z is -0.25
+            response = "SetObjectPosition_0_30_-6_10".encode("utf-8") # set object id 0 at 30m in x direction, -6m in y direction, rotation around z is 10 degree
             client_socket.send(response)
             time.sleep(3) 
 
